@@ -1,1 +1,187 @@
-"HELLO WORLD" 
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Open Sans', sans-serif;
+    text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
+}
+.container {
+    height:900px;
+    width: 600px;
+}
+.sidebar {
+    float: left;
+    width: 200px;
+}
+.center{
+    float: left;
+    width: 400px;
+}
+
+#lineup-currentspeaker {
+    padding: 20px;
+    max-height: 300px;
+    height: 300px;
+    border-bottom: 2px solid lightgray;
+}
+#lineup-currentspeaker .avatar {
+   height:200px;
+   background-color: azure;
+   margin-bottom: 20px;
+   margin-top:20px;
+}
+.avatar img {
+    border-radius: 50%;
+    border-style: solid;
+    width: 55%;
+    height:100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto 
+}
+#lineup-currentspeaker .display-name {
+    text-align: center;
+    font-size: 200%;
+    text-transform: uppercase;
+}
+#lineup-list {
+    height: 70%;
+}
+.label1 {
+    font-size: 120%;
+}
+.small {
+    height: 10px;
+    width: 10px;
+    background-color: black;
+    margin: 10px;
+}
+
+.speaker-item {
+    border-bottom: solid 0.5pt lightgray;
+    font-size: 140%;
+    padding: 20px;
+}
+
+.spoke {
+    opacity: 0.5;
+}
+
+.outer {
+    background-color: #f3f3f3ff;   
+}
+.inner {
+    background-color: #fbfbfbf5 !important;
+}
+
+</style>
+
+<!--<button onclick="schedule();">Go!</button>-->
+<body onload="schedule();">
+    <div class="container">
+        <div id="sidebar" class="sidebar outer"> </div>
+        <div id="lineup" class="center outer">
+            <div id="lineup-currentspeaker">
+                <div class="label1">Next Speaker is...</div>
+                <div class="avatar">
+                    <img src="lobster-icon.png" class="display-image"> </img>
+                </div>
+                <div class="speaker-name-display display-name">
+                    NONE
+                </div>
+            </div>
+            <div id="lineup-list" class="inner">
+                <div class="speaker-item">
+                    <span class="small avatar">X</span>
+                    <span>SYG</span>
+                </div>
+            </div>
+        </div>
+
+        <!--<div><a onclick="toggle_speakers_input();">Speakers</a></div>
+        <div id="speakers_in" style="display:none"><input></input></div>
+        <div class="column speakers"> </div>-->
+        
+    </div>
+</body>
+<!--
+    <div class="column">
+        <textarea id="members"
+                  rows="10"
+                  cols="20">
+mip
+fdu
+rfe
+syg
+fjr
+lml
+syg
+rls</textarea>
+    </div>
+    <div id="speakers" class="column speakers"></div>
+-->
+
+
+<script>
+const speakers = {
+    "mip": "lobster-icon.jpg",
+    "fdu": "batman.png",
+    "rfe": "mysteryman.jpg",
+    "syg": "mysteryman.jpg",
+    "fjr": "mysteryman.jpg"
+};
+
+const mk_list_item = (i, n) => 
+    `
+    <div class="speaker-item ${n}" onclick="tick_speaker('${n}');">
+        <span class="small avatar">X</span>
+        <span> ${n}</span>
+       
+    </div>
+`;
+
+const toggle_speakers_input = () => {
+    const l = document.querySelector("#speakers_in");
+    l.style.display = 
+        (l.style.display === "none") ? "block" : "none";
+}
+
+function set_current_speaker (name, avatar) {
+    const c = document.querySelector("#lineup-currentspeaker");
+    c.querySelector(".display-name").innerHTML = name;
+    c.querySelector(".display-image").src = avatar;
+}
+
+function tick_speaker(name) {
+    const el = document.querySelector(`.${name}`);
+    const p = el.parentNode;
+    p.removeChild(el);
+    p.appendChild(el);
+    
+    el.classList.add("spoke");
+
+    set_current_speaker(name, speakers[name]);
+
+    const next = p.firstElementChild;
+    if(!next.classList.contains("spoke")) {
+        next.classList.add("next");
+    }
+}
+
+function schedule() {
+    //const speakers = document.querySelector("#members").value.split("\n");
+    const s = Object.keys(speakers);
+
+    for (let i = s.length; i > 0; i--) {
+        const j = Math.floor(Math.random() * i);
+        const t = s[i - 1];
+        s[i - 1] = s[j];
+        s[j] = t;
+    }
+
+    document.querySelector("#lineup-list")
+        .innerHTML = s.map((x,i) => mk_list_item(i, x)).join("");
+
+    //document.querySelector(".lineup-list .speaker").classList.add("next");
+}
+</script>
